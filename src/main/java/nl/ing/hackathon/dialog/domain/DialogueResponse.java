@@ -39,6 +39,12 @@ public class DialogueResponse {
 	public void setContextUrl(String contextUrl) {
 		this.contextUrl = contextUrl;
 	}
+
+	@Override
+	public String toString() {
+		return "DialogueResponse [questions=" + questions + ", contextUrl="
+				+ contextUrl + "]";
+	}
 }
 
 

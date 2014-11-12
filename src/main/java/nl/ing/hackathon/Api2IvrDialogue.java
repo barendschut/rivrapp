@@ -49,7 +49,7 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 		context.setLanguage("nl-NL");
 
 		String url = "http://asking.herokuapp.com/answer?query=";
-		ModelMap map = null;
+		ModelMap map = new ModelMap();
 		while (notFinishedTalkingYet) {
 			DialogueResponse response = retrieveDialogueAnswer(new DialogueRequest(map, url));
 			log(response);

@@ -14,6 +14,9 @@ public class QuestionForCustomer {
 	/** example: integer" */
 	private String regexForAnswerGivenByCustomer;
 
+	/** example: integer" */
+	private QuestionType type;
+
 	private String errorMessageForWrongInput;
 
 	public String getQuestion() {
@@ -47,5 +50,17 @@ public class QuestionForCustomer {
 	
 	public void setErrorMessageForWrongInput(String errorMessageForWrongInput) {
 		this.errorMessageForWrongInput = errorMessageForWrongInput;
+	}
+	
+	public QuestionType getType() {
+		return type;
+	}
+
+	public void setType(QuestionType type) {
+		this.type = type;
+	}
+
+	public enum QuestionType {
+		ALPHANUMERIC, NUMERIC, DATE;
 	}
 }

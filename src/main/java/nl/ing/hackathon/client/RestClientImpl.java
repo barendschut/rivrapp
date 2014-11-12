@@ -44,7 +44,7 @@ public class RestClientImpl implements RestClient {
 	}
 			
 	@Override
-	public DialogueResponse postAnswer(final DialogueRequest question ) {
+	public DialogueResponse postAnswer(final DialogueRequest question) {
 		WebResource webResource = client
 				.resource(question.getUrl());
 		DialogueResponse response = webResource.accept(
@@ -60,6 +60,13 @@ public class RestClientImpl implements RestClient {
 		System.out.println("Server response .... \n");
 		System.out.println(response.toString());
 
+	}
+	
+	public DialogueResponse retrieveAnswer(DialogueRequest question) {
+		if (!question.getAnswers().isEmpty()) {
+			return postAnswer(question);	
+		}
+		return getAnswer(question);
 	}
 
 }

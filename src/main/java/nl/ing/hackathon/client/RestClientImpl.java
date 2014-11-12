@@ -1,7 +1,7 @@
 package nl.ing.hackathon.client;
 
-import nl.ing.hackathon.dialog.DialogueRequest;
-import nl.ing.hackathon.dialog.DialogueResponse;
+import nl.ing.hackathon.dialog.domain.DialogueRequest;
+import nl.ing.hackathon.dialog.domain.DialogueResponse;
 
 import org.springframework.stereotype.Component;
 
@@ -32,9 +32,13 @@ public class RestClientImpl implements RestClient {
 	public DialogueResponse getAnswer(final DialogueRequest dialogRequest) {
 		WebResource webResource = client.resource(dialogRequest.getUrl()
 				+ dialogRequest.getQuery());
+		/*
 		DialogueResponse response = webResource.accept("application/json").get(
 				DialogueResponse.class);
-
+*/
+		
+		DialogueResponse response = webResource.accept("application/json").post(
+				DialogueResponse.class);
 		logResponse(response);
 		return response;
 	}
@@ -44,5 +48,6 @@ public class RestClientImpl implements RestClient {
 		System.out.println(response.toString());
 
 	}
-
+	
+	
 }

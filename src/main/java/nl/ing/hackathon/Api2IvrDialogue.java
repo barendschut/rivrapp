@@ -6,8 +6,8 @@ import java.net.URL;
 import javax.annotation.Resource;
 
 import nl.ing.hackathon.client.RestClientImpl;
-import nl.ing.hackathon.dialog.DialogueRequest;
-import nl.ing.hackathon.dialog.DialogueResponse;
+import nl.ing.hackathon.dialog.domain.DialogueRequest;
+import nl.ing.hackathon.dialog.domain.DialogueResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

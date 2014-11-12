@@ -1,4 +1,4 @@
-package nl.ing.hackathon.dialog;
+package nl.ing.hackathon.dialog.domain;
 
 public class DialogueRequest {
 

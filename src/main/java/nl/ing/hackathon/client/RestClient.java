@@ -4,7 +4,6 @@ import nl.ing.hackathon.dialog.domain.DialogueRequest;
 import nl.ing.hackathon.dialog.domain.DialogueResponse;
 
 import org.springframework.stereotype.Component;
-import org.springframework.ui.ModelMap;
 
 @Component
 public interface RestClient {

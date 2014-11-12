@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import nl.ing.hackathon.client.RestClientImpl;
 import nl.ing.hackathon.dialog.domain.DialogueRequest;
 import nl.ing.hackathon.dialog.domain.DialogueResponse;
+import nl.ing.hackathon.dialog.domain.QuestionForCustomer;
+import nl.ing.hackathon.dialog.domain.QuestionForCustomer.QuestionType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +23,6 @@ import com.nuecho.rivr.voicexml.dialogue.VoiceXmlDialogueContext;
 import com.nuecho.rivr.voicexml.turn.first.VoiceXmlFirstTurn;
 import com.nuecho.rivr.voicexml.turn.last.Exit;
 import com.nuecho.rivr.voicexml.turn.last.VoiceXmlLastTurn;
-import com.nuecho.rivr.voicexml.turn.output.DtmfRecognition;
 import com.nuecho.rivr.voicexml.turn.output.Interaction;
 import com.nuecho.rivr.voicexml.turn.output.OutputTurns;
 import com.nuecho.rivr.voicexml.turn.output.SpeechRecognition;
@@ -50,34 +51,43 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 				question, url));
 		log(answer);
 
-		Interaction interaction = OutputTurns.interaction("get-speech")
-				.addPrompt(new SpeechSynthesis(answer.getAnswer()))
-				.build(getGrammar(answer.getType()), Duration.seconds(5));
-
-		DialogueUtils.doTurn(interaction, context);
-
+		for (QuestionForCustomer vraag : answer.getQuestions()) {
+			Interaction interaction = OutputTurns.interaction("get-speech")
+					.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
+					.build(getGrammar(vraag.getType()), Duration.seconds(5));
+	
+			DialogueUtils.doTurn(interaction, context);
+		}
 		return new Exit("End of dialogue");
 	}
 	
-	private SpeechRecognition getGrammar(Boolean type) {
-		if (type)
-			return getDigitGrammar();
-		else
-			return getNlGrammar();
-	}
-
-	private SpeechRecognition getDigitGrammar() {
-		GrammarItem grammar = new GrammarReference("builtin:grammar/digits");
+	private SpeechRecognition getGrammar(QuestionType questionType) {
+		GrammarItem grammar = null;
+		switch (questionType) {
+		case ALPHANUMERIC:
+			grammar = getNlGrammar();
+		case NUMERIC:
+			grammar = getDigitGrammar();
+		case DATE:
+			grammar = getDateGrammar();
+		}
 		SpeechRecognition recognization = new SpeechRecognition(grammar);
 		return recognization;
 	}
+
+	private GrammarItem getDateGrammar() {
+		return new GrammarReference("builtin:grammar/date");
+	}
+
+	private GrammarItem getDigitGrammar() {
+		return new GrammarReference("builtin:grammar/digits");
+	}
 	
-	private SpeechRecognition getNlGrammar() {
+	private GrammarItem getNlGrammar() {
 		try {
 			URL resource = new URL("http", InetAddress.getLocalHost().getHostAddress(), 8080, "/nl/ing/hackathon/2013_07T_gram_343.gram");
 			GrammarItem grammar = new GrammarReference(resource.getPath());
-			SpeechRecognition recognization = new SpeechRecognition(grammar);
-			return recognization;
+			return grammar;
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

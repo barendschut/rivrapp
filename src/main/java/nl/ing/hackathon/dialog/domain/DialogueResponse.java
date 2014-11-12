@@ -1,5 +1,6 @@
 package nl.ing.hackathon.dialog.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,10 @@ public class DialogueResponse {
 	 * /072017
 	 * */
 	private String contextUrl;
+	
+	public DialogueResponse() {
+		questions = new ArrayList<QuestionForCustomer>();
+	}
 
 	public DialogueResponse(final List<QuestionForCustomer> questions) {
 		this.questions = questions;

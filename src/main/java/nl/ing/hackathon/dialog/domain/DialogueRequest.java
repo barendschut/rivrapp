@@ -1,21 +1,28 @@
 package nl.ing.hackathon.dialog.domain;
 
+import java.util.List;
+
 public class DialogueRequest {
+	
+	private String query;
+	
+	// List of questions for the client
+	private final List<AnswerForApi> answers;
 
-    private final String query;
-    private final String url;
+	public DialogueRequest(final List<AnswerForApi> answers) {
+		this.answers = answers;
+	}
 
-    public DialogueRequest(final String query, final String url) {
-        this.query = query;
-        this.url = url;
-    }
+	public List<AnswerForApi> getAnswers() {
+		return answers;
+	}
 
-    public String getQuery() {
-        return query;
-    }
+	public String getQuery() {
+		return query;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public void setQuery(String query) {
+		this.query = query;
+	}
 
 }

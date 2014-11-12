@@ -4,12 +4,16 @@ import nl.ing.hackathon.dialog.domain.DialogueRequest;
 import nl.ing.hackathon.dialog.domain.DialogueResponse;
 
 import org.springframework.stereotype.Component;
+import org.springframework.ui.ModelMap;
 
 @Component
 public interface RestClient {
 
 	public boolean hasMoreQuestions();
+	
+	DialogueResponse postAnswer(ModelMap answers, String url);
 
-	public DialogueResponse getAnswer(DialogueRequest question);
+
+	DialogueResponse getAnswer(DialogueRequest question);
 
 }

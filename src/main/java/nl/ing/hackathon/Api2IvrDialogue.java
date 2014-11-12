@@ -38,25 +38,27 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	private RestClientImpl restClient;
 
 	private static final Logger LOG = LoggerFactory.getLogger(Api2IvrDialogue.class);
-
+	private boolean notFinishedTalkingYet = true;
 	@Override
 	public VoiceXmlLastTurn run(VoiceXmlFirstTurn firstTurn, VoiceXmlDialogueContext context) 
 			throws Exception {
 		
 		context.setLanguage("nl-NL");
 
-		String question = "rente";
-		String url = "http://asking.herokuapp.com/answer?query=";
-		DialogueResponse answer = retrieveDialogueAnswer(new DialogueRequest(
-				question, url));
-		log(answer);
-
-		for (QuestionForCustomer vraag : answer.getQuestions()) {
-			Interaction interaction = OutputTurns.interaction("get-speech")
-					.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
-					.build(getGrammar(vraag.getType()), Duration.seconds(5));
+		while (notFinishedTalkingYet) {
+			String question = "rente";
+			String url = "http://asking.herokuapp.com/answer?query=";
+			DialogueResponse answer = retrieveDialogueAnswer(new DialogueRequest(
+					question, url));
+			log(answer);
 	
-			DialogueUtils.doTurn(interaction, context);
+			for (QuestionForCustomer vraag : answer.getQuestions()) {
+				Interaction interaction = OutputTurns.interaction("get-speech")
+						.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
+						.build(getGrammar(vraag.getType()), Duration.seconds(5));
+		
+				DialogueUtils.doTurn(interaction, context);
+			}
 		}
 		return new Exit("End of dialogue");
 	}
@@ -101,7 +103,6 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	private void log(DialogueResponse answer) {
 		System.out.println("answer is: " + answer.toString());
 		LOG.info("answer is: " + answer.toString());
-
 	}
 
 	@Override

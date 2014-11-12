@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml application="//root/975da499-050a-4b04-ac60-82b1926d0173"
+    version="2.1" xml:lang="nl-NL" xmlns="http://www.w3.org/2001/vxml">
+    <script>application.rivr.localErrorHandling = false; application.rivr.inputTurn = {};</script>
+    <property name="fetchtimeout" value="120000ms"/>
+    <form id="form">
+        <block name="prompt0">
+            <prompt bargein="false">Welkom bij de ING. Waarmee kan ik u helpen?</prompt>
+        </block>
+        <field name="recognition">
+            <grammar mode="voice" src="/nl/ing/hackathon/2013_07T_gram_343.gram"/>
+            <property name="timeout" value="5000ms"/>
+        </field>
+        <filled mode="any">
+            <script>application.rivr.addRecognitionResult()</script>
+            <goto next="#submitForm"/>
+        </filled>
+    </form>
+    <catch>
+        <if cond="_event.substring(0, 5) == &quot;error&quot;">
+            <if cond="application.rivr.localErrorHandling">
+                <goto next="#fatalErrorForm"/>
+                <else/>
+                <script>application.rivr.localErrorHandling=true</script>
+            </if>
+        </if>
+        <script>application.rivr.addEventResult(_event, _message)</script>
+        <goto next="#submitForm"/>
+    </catch>
+    <form id="fatalErrorForm">
+        <block>
+            <exit/>
+        </block>
+    </form>
+    <form id="submitForm">
+        <block>
+            <var
+                expr="application.rivr.toJson(application.rivr.inputTurn)" name="inputTurn"/>
+            <if cond="application.rivr.hasRecording(application.rivr.inputTurn)">
+                <var
+                    expr="application.rivr.inputTurn.recordingMetaData.data" name="recording"/>
+                <assign expr="undefined" name="application.rivr.inputTurn.recordingMetaData.data"/>
+                <submit enctype="multipart/form-data" method="post"
+                    namelist="inputTurn recording" next="//975da499-050a-4b04-ac60-82b1926d0173/0/get-speech"/>
+                <else/>
+                <submit method="post" namelist="inputTurn" next="//975da499-050a-4b04-ac60-82b1926d0173/0/get-speech"/>
+            </if>
+        </block>
+    </form>
+</vxml>

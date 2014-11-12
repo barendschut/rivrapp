@@ -6,7 +6,6 @@ import nl.ing.hackathon.dialog.domain.DialogueRequest;
 import nl.ing.hackathon.dialog.domain.DialogueResponse;
 
 import org.springframework.stereotype.Component;
-import org.springframework.ui.ModelMap;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -33,23 +32,19 @@ public class RestClientImpl implements RestClient {
 
 	@Override
 	public DialogueResponse getAnswer(final DialogueRequest question) {
-		WebResource webResource = client
-				.resource(question.getUrl());
+		WebResource webResource = client.resource(question.getUrl());
 		DialogueResponse response = webResource.accept(
-				MediaType.APPLICATION_JSON_TYPE).get(
-				DialogueResponse.class);		
-		
+				MediaType.APPLICATION_JSON_TYPE).get(DialogueResponse.class);
+
 		logResponse(response);
 		return response;
 	}
-			
+
 	@Override
 	public DialogueResponse postAnswer(final DialogueRequest question) {
-		WebResource webResource = client
-				.resource(question.getUrl());
+		WebResource webResource = client.resource(question.getUrl());
 		DialogueResponse response = webResource.accept(
-				MediaType.APPLICATION_JSON_TYPE).post(
-				DialogueResponse.class,
+				MediaType.APPLICATION_JSON_TYPE).post(DialogueResponse.class,
 				question.getAnswers());
 
 		logResponse(response);
@@ -61,10 +56,10 @@ public class RestClientImpl implements RestClient {
 		System.out.println(response.toString());
 
 	}
-	
+
 	public DialogueResponse retrieveAnswer(DialogueRequest question) {
-		if (!question.getAnswers().isEmpty()) {
-			return postAnswer(question);	
+		if (question.getAnswers() != null) {
+			return postAnswer(question);
 		}
 		return getAnswer(question);
 	}

@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.URL;
 
 import javax.annotation.Resource;
+import javax.json.JsonArray;
 
 import nl.ing.hackathon.client.RestClientImpl;
 import nl.ing.hackathon.dialog.domain.DialogueRequest;
@@ -21,6 +22,7 @@ import com.nuecho.rivr.core.util.Duration;
 import com.nuecho.rivr.voicexml.dialogue.VoiceXmlDialogue;
 import com.nuecho.rivr.voicexml.dialogue.VoiceXmlDialogueContext;
 import com.nuecho.rivr.voicexml.turn.first.VoiceXmlFirstTurn;
+import com.nuecho.rivr.voicexml.turn.input.VoiceXmlInputTurn;
 import com.nuecho.rivr.voicexml.turn.last.Exit;
 import com.nuecho.rivr.voicexml.turn.last.VoiceXmlLastTurn;
 import com.nuecho.rivr.voicexml.turn.output.Interaction;
@@ -48,17 +50,29 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 		while (notFinishedTalkingYet) {
 			String question = "rente";
 			String url = "http://asking.herokuapp.com/answer?query=";
-			DialogueResponse answer = retrieveDialogueAnswer(new DialogueRequest(
+			DialogueResponse response = retrieveDialogueAnswer(new DialogueRequest(
 					question, url));
-			log(answer);
+			log(response);
 	
-			for (QuestionForCustomer vraag : answer.getQuestions()) {
+			for (QuestionForCustomer vraag : response.getQuestions()) {
 				Interaction interaction = OutputTurns.interaction("get-speech")
 						.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
 						.build(getGrammar(vraag.getType()), Duration.seconds(5));
 		
-				DialogueUtils.doTurn(interaction, context);
+				VoiceXmlInputTurn answer = DialogueUtils.doTurn(interaction, context);
+				JsonArray recognitionResult = answer.getRecognitionInfo().getRecognitionResult();
+				String recognised = recognitionResult.getJsonObject(0).getString("interpretation");
+				System.out.println("Got a reply from the caller:");
+				System.out.println(recognised);
+				
+				// add answer to a list for a new REST call
+				
 			}
+			
+			
+			// do a new REST call with all params and answers
+			
+			// update notFinishedTalkingYet if needed
 		}
 		return new Exit("End of dialogue");
 	}

@@ -79,14 +79,13 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	}
 	
 	private SpeechRecognition getGrammar(QuestionType questionType) {
-		GrammarItem grammar = null;
-		switch (questionType) {
-		case ALPHANUMERIC:
-			grammar = getNlGrammar();
-		case NUMERIC:
+		GrammarItem grammar;
+		if (QuestionType.NUMERIC.equals(questionType)) {
 			grammar = getDigitGrammar();
-		case DATE:
+		} else if (QuestionType.DATE.equals(questionType)) {
 			grammar = getDateGrammar();
+		} else {
+			grammar = getNlGrammar();
 		}
 		SpeechRecognition recognization = new SpeechRecognition(grammar);
 		return recognization;

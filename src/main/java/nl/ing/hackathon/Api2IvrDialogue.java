@@ -2,6 +2,8 @@ package nl.ing.hackathon;
 
 import javax.annotation.Resource;
 
+import nl.ing.hackathon.client.RestClient;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,7 @@ import com.nuecho.rivr.voicexml.turn.output.grammar.GrammarReference;
 public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 
 	@Resource
-	private Object restClient;
+	private RestClient restClient;
 	
 	@Override
 	public VoiceXmlLastTurn run(VoiceXmlFirstTurn firstTurn, VoiceXmlDialogueContext context) throws Exception {

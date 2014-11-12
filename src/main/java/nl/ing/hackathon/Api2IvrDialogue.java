@@ -72,8 +72,9 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 			}
 			url = response.getContextUrl();
 			// do a new REST call with all params and answers // DONE ABOVE
-			//post
+			
 			// update notFinishedTalkingYet if needed
+			
 		}
 		return new Exit("End of dialogue");
 	}
@@ -112,7 +113,7 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	}
 
 	private DialogueResponse retrieveDialogueAnswer(DialogueRequest question) {
-		return restClient.getAnswer(question);
+		return restClient.retrieveAnswer(question);
 	}
 
 	private void log(DialogueResponse answer) {

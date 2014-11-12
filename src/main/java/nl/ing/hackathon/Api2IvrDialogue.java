@@ -1,14 +1,17 @@
 package nl.ing.hackathon;
 
-import java.io.File;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.URL;
 
 import javax.annotation.Resource;
 
+import nl.ing.hackathon.client.RestClientImpl;
+import nl.ing.hackathon.dialog.DialogueRequest;
+import nl.ing.hackathon.dialog.DialogueResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.nuecho.rivr.core.dialogue.DialogueUtils;
@@ -29,8 +32,12 @@ import com.nuecho.rivr.voicexml.turn.output.grammar.GrammarReference;
 public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 
 	@Resource
-	private Object restClient;
-	
+	//@Qualifier("RestClientImpl")
+	private RestClientImpl restClient;
+
+	private static final Logger LOG = LoggerFactory
+			.getLogger(Api2IvrDialogue.class);
+
 	@Override
 	public VoiceXmlLastTurn run(VoiceXmlFirstTurn firstTurn, VoiceXmlDialogueContext context) throws Exception {
 		
@@ -42,6 +49,17 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 			
 			DialogueUtils.doTurn(interaction, context);
 		
+		//while (restClient.hasMoreQuestions()) {
+
+			String question = "rente";
+			String url = "http://asking.herokuapp.com/answer?query=";
+			DialogueResponse answer = retrieveDialogueAnswer(new DialogueRequest(
+					question, url));
+			log(answer);
+			
+			DialogueUtils.doTurn(interaction, context);
+
+		//}
 		return new Exit("End of dialogue");
 	}
 	
@@ -61,6 +79,16 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 			e1.printStackTrace();
 		}
 		return null;
+	}
+
+	private DialogueResponse retrieveDialogueAnswer(DialogueRequest question) {
+		return restClient.getAnswer(question);
+	}
+
+	private void log(DialogueResponse answer) {
+		System.out.println("answer is: " + answer.toString());
+		LOG.info("answer is: " + answer.toString());
+
 	}
 
 	@Override

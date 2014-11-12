@@ -21,6 +21,7 @@ import com.nuecho.rivr.voicexml.dialogue.VoiceXmlDialogueContext;
 import com.nuecho.rivr.voicexml.turn.first.VoiceXmlFirstTurn;
 import com.nuecho.rivr.voicexml.turn.last.Exit;
 import com.nuecho.rivr.voicexml.turn.last.VoiceXmlLastTurn;
+import com.nuecho.rivr.voicexml.turn.output.DtmfRecognition;
 import com.nuecho.rivr.voicexml.turn.output.Interaction;
 import com.nuecho.rivr.voicexml.turn.output.OutputTurns;
 import com.nuecho.rivr.voicexml.turn.output.SpeechRecognition;
@@ -35,34 +36,36 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	//@Qualifier("RestClientImpl")
 	private RestClientImpl restClient;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(Api2IvrDialogue.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Api2IvrDialogue.class);
 
 	@Override
-	public VoiceXmlLastTurn run(VoiceXmlFirstTurn firstTurn, VoiceXmlDialogueContext context) throws Exception {
+	public VoiceXmlLastTurn run(VoiceXmlFirstTurn firstTurn, VoiceXmlDialogueContext context) 
+			throws Exception {
 		
 		context.setLanguage("nl-NL");
-		
-			Interaction interaction = OutputTurns.interaction("get-speech")
-					.addPrompt(new SpeechSynthesis("Say some digits."))
-					.build(getNlGrammar(), Duration.seconds(5));
-			
-			DialogueUtils.doTurn(interaction, context);
-		
-		//while (restClient.hasMoreQuestions()) {
 
-			String question = "rente";
-			String url = "http://asking.herokuapp.com/answer?query=";
-			DialogueResponse answer = retrieveDialogueAnswer(new DialogueRequest(
-					question, url));
-			log(answer);
-			
-			DialogueUtils.doTurn(interaction, context);
+		String question = "rente";
+		String url = "http://asking.herokuapp.com/answer?query=";
+		DialogueResponse answer = retrieveDialogueAnswer(new DialogueRequest(
+				question, url));
+		log(answer);
 
-		//}
+		Interaction interaction = OutputTurns.interaction("get-speech")
+				.addPrompt(new SpeechSynthesis(answer.getAnswer()))
+				.build(getGrammar(answer.getType()), Duration.seconds(5));
+
+		DialogueUtils.doTurn(interaction, context);
+
 		return new Exit("End of dialogue");
 	}
 	
+	private SpeechRecognition getGrammar(Boolean type) {
+		if (type)
+			return getDigitGrammar();
+		else
+			return getNlGrammar();
+	}
+
 	private SpeechRecognition getDigitGrammar() {
 		GrammarItem grammar = new GrammarReference("builtin:grammar/digits");
 		SpeechRecognition recognization = new SpeechRecognition(grammar);

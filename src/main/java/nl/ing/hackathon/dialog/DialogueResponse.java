@@ -1,4 +1,4 @@
-package nl.ing.hackathon.client.domain;
+package nl.ing.hackathon.dialog;
 
 
 

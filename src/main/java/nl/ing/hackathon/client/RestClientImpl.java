@@ -58,7 +58,7 @@ public class RestClientImpl implements RestClient {
 	}
 
 	public DialogueResponse retrieveAnswer(DialogueRequest question) {
-		if (question.getAnswers() != null) {
+		if (!question.getAnswers().isEmpty()) {
 			return postAnswer(question);
 		}
 		return getAnswer(question);

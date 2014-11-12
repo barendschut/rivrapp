@@ -1,8 +1,14 @@
 package nl.ing.hackathon;
 
+import java.io.File;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URL;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.nuecho.rivr.core.dialogue.DialogueUtils;
@@ -13,7 +19,6 @@ import com.nuecho.rivr.voicexml.turn.first.VoiceXmlFirstTurn;
 import com.nuecho.rivr.voicexml.turn.last.Exit;
 import com.nuecho.rivr.voicexml.turn.last.VoiceXmlLastTurn;
 import com.nuecho.rivr.voicexml.turn.output.Interaction;
-import com.nuecho.rivr.voicexml.turn.output.Message;
 import com.nuecho.rivr.voicexml.turn.output.OutputTurns;
 import com.nuecho.rivr.voicexml.turn.output.SpeechRecognition;
 import com.nuecho.rivr.voicexml.turn.output.audio.SpeechSynthesis;
@@ -29,20 +34,33 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	@Override
 	public VoiceXmlLastTurn run(VoiceXmlFirstTurn firstTurn, VoiceXmlDialogueContext context) throws Exception {
 		
-		while (restClient.hasMoreQuestions()) {
-			
-			GrammarItem grammar = new GrammarReference("builtin:grammar/digits");
-			SpeechRecognition recognization = new SpeechRecognition(grammar);
-			
+		context.setLanguage("nl-NL");
+		
 			Interaction interaction = OutputTurns.interaction("get-speech")
 					.addPrompt(new SpeechSynthesis("Say some digits."))
-					.build(recognization, Duration.seconds(5));
+					.build(getNlGrammar(), Duration.seconds(5));
 			
 			DialogueUtils.doTurn(interaction, context);
-		}
-		
 		
 		return new Exit("End of dialogue");
+	}
+	
+	private SpeechRecognition getDigitGrammar() {
+		GrammarItem grammar = new GrammarReference("builtin:grammar/digits");
+		SpeechRecognition recognization = new SpeechRecognition(grammar);
+		return recognization;
+	}
+	
+	private SpeechRecognition getNlGrammar() {
+		try {
+			URL resource = new URL("http", InetAddress.getLocalHost().getHostAddress(), 8080, "/nl/ing/hackathon/2013_07T_gram_343.gram");
+			GrammarItem grammar = new GrammarReference(resource.getPath());
+			SpeechRecognition recognization = new SpeechRecognition(grammar);
+			return recognization;
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

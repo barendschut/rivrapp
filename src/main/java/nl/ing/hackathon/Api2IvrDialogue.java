@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.ModelMap;
 
 import com.nuecho.rivr.core.dialogue.DialogueUtils;
 import com.nuecho.rivr.core.util.Duration;
@@ -47,13 +48,14 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 		
 		context.setLanguage("nl-NL");
 
+		String url = "http://asking.herokuapp.com/answer?query=";
+		ModelMap map = null;
 		while (notFinishedTalkingYet) {
-			String question = "rente";
-			String url = "http://asking.herokuapp.com/answer?query=";
-			DialogueResponse response = retrieveDialogueAnswer(new DialogueRequest(
-					question, url));
+			DialogueResponse response = retrieveDialogueAnswer(new DialogueRequest(map, url));
 			log(response);
-	
+			
+			map = new ModelMap();
+			
 			for (QuestionForCustomer vraag : response.getQuestions()) {
 				Interaction interaction = OutputTurns.interaction("get-speech")
 						.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
@@ -66,12 +68,11 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 				System.out.println(recognised);
 				
 				// add answer to a list for a new REST call
-				
+				map.put(vraag.getParameterName(), recognised);
 			}
-			
-			
-			// do a new REST call with all params and answers
-			
+			url = response.getContextUrl();
+			// do a new REST call with all params and answers // DONE ABOVE
+			//post
 			// update notFinishedTalkingYet if needed
 		}
 		return new Exit("End of dialogue");

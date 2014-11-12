@@ -1,28 +1,32 @@
 package nl.ing.hackathon.dialog.domain;
 
-import java.util.List;
+import org.springframework.ui.ModelMap;
 
 public class DialogueRequest {
 	
-	private String query;
+	private String url;
 	
 	// List of questions for the client
-	private final List<AnswerForApi> answers;
+	private final ModelMap answers;
 
-	public DialogueRequest(final List<AnswerForApi> answers) {
-		this.answers = answers;
+	public DialogueRequest() {
+		this.answers = new ModelMap();
 	}
 
-	public List<AnswerForApi> getAnswers() {
+	public DialogueRequest(ModelMap answers, String url) {
+		this.answers = answers;
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public ModelMap getAnswers() {
 		return answers;
 	}
-
-	public String getQuery() {
-		return query;
-	}
-
-	public void setQuery(String query) {
-		this.query = query;
-	}
-
 }

@@ -32,11 +32,9 @@ public class RestClientImpl implements RestClient {
 	}
 
 	@Override
-	public DialogueResponse getAnswer(DialogueRequest question) {
-		url="https://asking.herokuapp.com/validate-card";
-		//url="https://asking.herokuapp.com/answer?query=%22rente%22";
+	public DialogueResponse getAnswer(final DialogueRequest question) {
 		WebResource webResource = client
-				.resource(url + query);
+				.resource(question.getUrl());
 		DialogueResponse response = webResource.accept(
 				MediaType.APPLICATION_JSON_TYPE).get(
 				DialogueResponse.class);		
@@ -46,18 +44,13 @@ public class RestClientImpl implements RestClient {
 	}
 			
 	@Override
-	public DialogueResponse postAnswer(final ModelMap answers, String url) {
-		url="https://asking.herokuapp.com/validate-card";
-		
-		answers.addAttribute("cardNumber", 1234);
-		answers.addAttribute("expiryDate", 072017);
-		
+	public DialogueResponse postAnswer(final DialogueRequest question ) {
 		WebResource webResource = client
-				.resource(url);
+				.resource(question.getUrl());
 		DialogueResponse response = webResource.accept(
 				MediaType.APPLICATION_JSON_TYPE).post(
 				DialogueResponse.class,
-				answers);
+				question.getAnswers());
 
 		logResponse(response);
 		return response;

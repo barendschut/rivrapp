@@ -10,10 +10,9 @@ import org.springframework.ui.ModelMap;
 public interface RestClient {
 
 	public boolean hasMoreQuestions();
-	
-	DialogueResponse postAnswer(ModelMap answers, String url);
-
 
 	DialogueResponse getAnswer(DialogueRequest question);
+
+	DialogueResponse postAnswer(DialogueRequest question);
 
 }

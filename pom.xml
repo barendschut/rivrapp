@@ -28,12 +28,29 @@
         	<groupId>com.nuecho</groupId>
         	<artifactId>rivr-core</artifactId>
         	<version>1.0.3</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>javax.servlet</groupId>
+        			<artifactId>servlet-api</artifactId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
         <dependency>
         	<groupId>com.nuecho</groupId>
         	<artifactId>rivr-voicexml</artifactId>
         	<version>1.0.3</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>javax.servlet</groupId>
+        			<artifactId>servlet-api</artifactId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
+       	<dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>javax.servlet-api</artifactId>
+	        <version>3.0.1</version>
+       	</dependency>
     </dependencies>
 
     <properties>

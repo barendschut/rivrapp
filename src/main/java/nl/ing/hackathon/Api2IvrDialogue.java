@@ -111,7 +111,7 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 	
 	private GrammarItem getNlGrammar() {
 		try {
-			URL resource = new URL("http", InetAddress.getLocalHost().getHostAddress(), 8080, "/nl/ing/hackathon/2013_07T_gram_343.gram");
+			URL resource = new URL("http", InetAddress.getLocalHost().getHostAddress(), 8080, "/docs/kilo.gram");
 			GrammarItem grammar = new GrammarReference(resource.getPath());
 			return grammar;
 		} catch (Exception e1) {

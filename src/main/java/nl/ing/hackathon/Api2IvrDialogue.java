@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.nuecho.rivr.core.dialogue.DialogueUtils;
 import com.nuecho.rivr.core.util.Duration;
@@ -35,6 +36,7 @@ import com.nuecho.rivr.voicexml.turn.output.grammar.GrammarItem;
 import com.nuecho.rivr.voicexml.turn.output.grammar.GrammarReference;
 
 @Component
+@RequestMapping("/test123")
 public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 
 	@Resource
@@ -60,7 +62,7 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 			
 			for (QuestionForCustomer vraag : response.getQuestions()) {
 				Interaction interaction = OutputTurns.interaction("get-speech")
-						.addPrompt(new SpeechSynthesis("Hello"))
+						.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
 						.build(getGrammar(QuestionType.ALPHANUMERIC), Duration.seconds(5));
 		
 				VoiceXmlInputTurn answer = DialogueUtils.doTurn(interaction, context);

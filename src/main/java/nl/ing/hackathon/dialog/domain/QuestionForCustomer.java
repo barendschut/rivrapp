@@ -18,6 +18,8 @@ public class QuestionForCustomer {
 	private QuestionType type;
 
 	private String errorMessageForWrongInput;
+	
+	private String step;
 
 	public String getQuestion() {
 		return question;
@@ -63,16 +65,21 @@ public class QuestionForCustomer {
 	public enum QuestionType {
 		ALPHANUMERIC, NUMERIC, DATE;
 	}
-	
+
+	public String getStep() {
+		return step;
+	}
+
+	public void setStep(String step) {
+		this.step = step;
+	}
+
 	@Override
 	public String toString() {
-		if (type !=null) {
-			
-		}
-		return "QuestionForCustomer [question=" + question
-				+ ", parameterName=" + parameterName 
-				+ ", regexForAnswerGivenByCustomer=" + regexForAnswerGivenByCustomer
-				+ ", type=" + (type!=null?type:QuestionType.DATE)
-				+ ", errorMessageForWrongInput=" + errorMessageForWrongInput;
+		return "QuestionForCustomer [question=" + question + ", parameterName="
+				+ parameterName + ", regexForAnswerGivenByCustomer="
+				+ regexForAnswerGivenByCustomer + ", type=" + type
+				+ ", errorMessageForWrongInput=" + errorMessageForWrongInput
+				+ ", step=" + step + "]";
 	}
 }

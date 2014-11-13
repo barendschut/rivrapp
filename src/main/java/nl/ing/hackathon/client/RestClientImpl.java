@@ -1,17 +1,18 @@
 package nl.ing.hackathon.client;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
 import nl.ing.hackathon.dialog.domain.DialogueRequest;
 import nl.ing.hackathon.dialog.domain.DialogueResponse;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 @Component
 public class RestClientImpl implements RestClient {
@@ -24,37 +25,56 @@ public class RestClientImpl implements RestClient {
 	}
 
 	private RestClientImpl() {
-		ClientConfig clientConfig = new DefaultClientConfig();
-		clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING,
-				Boolean.TRUE);
-		client = Client.create(clientConfig);
+		client = ClientBuilder.newClient();
+		// client.register(DialogueResponseMessageBodyReader.class);
+		// client.register(DialogueResponseMessageBodyWriter.class);
+		client.register(JacksonJsonProvider.class);
 	}
 
 	@Override
 	public DialogueResponse getAnswer(final DialogueRequest question) {
-		WebResource webResource = client.resource(question.getUrl());
-		DialogueResponse response = webResource.accept(
-				MediaType.APPLICATION_JSON_TYPE).get(DialogueResponse.class);
+
+		WebTarget webTarget = client.target(question.getUrl());
+		DialogueResponse response = webTarget
+				.request(MediaType.APPLICATION_JSON_TYPE)
+				.accept(MediaType.APPLICATION_JSON_TYPE)
+				.get(DialogueResponse.class);
 
 		logResponse(response);
 		return response;
 	}
 
+	/*
+	 * @Override public DialogueResponse postAnswer(final DialogueRequest
+	 * question) {
+	 * 
+	 * 
+	 * String payload = "{\"cardNumber\":\"1234\", \"expiryDate\":\"072017\"}";
+	 * //{"cardNumber":"1234","expiryDate":"072017"}
+	 * 
+	 * WebTarget webTarget = client.target(question.getUrl()); DialogueResponse
+	 * response = null; response = webTarget .request()
+	 * .accept(MediaType.APPLICATION_JSON_TYPE) .post(Entity.entity(payload,
+	 * MediaType.APPLICATION_JSON_TYPE), DialogueResponse.class);
+	 * 
+	 * logResponse(response); return response; }
+	 */
+
 	@Override
 	public DialogueResponse postAnswer(final DialogueRequest question) {
-		WebResource webResource = client.resource(question.getUrl());
-		DialogueResponse response = webResource.accept(
-				MediaType.APPLICATION_JSON_TYPE).post(DialogueResponse.class,
-				question.getAnswers());
+		RestTemplate restTemplate = new RestTemplate();
 
-		logResponse(response);
-		return response;
+		return restTemplate.postForObject(question.getUrl(),
+				question.getAnswers(), DialogueResponse.class);
+	}
+
+	private ObjectMapper getObjectMapper() {
+		return new ObjectMapper();
 	}
 
 	private void logResponse(final DialogueResponse response) {
 		System.out.println("Server response .... \n");
 		System.out.println(response.toString());
-
 	}
 
 	public DialogueResponse retrieveAnswer(DialogueRequest question) {

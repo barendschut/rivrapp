@@ -63,4 +63,16 @@ public class QuestionForCustomer {
 	public enum QuestionType {
 		ALPHANUMERIC, NUMERIC, DATE;
 	}
+	
+	@Override
+	public String toString() {
+		if (type !=null) {
+			
+		}
+		return "QuestionForCustomer [question=" + question
+				+ ", parameterName=" + parameterName 
+				+ ", regexForAnswerGivenByCustomer=" + regexForAnswerGivenByCustomer
+				+ ", type=" + (type!=null?type:QuestionType.DATE)
+				+ ", errorMessageForWrongInput=" + errorMessageForWrongInput;
+	}
 }

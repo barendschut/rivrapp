@@ -48,18 +48,22 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 		
 		context.setLanguage("nl-NL");
 
-		String url = "http://asking.herokuapp.com/answer?query=";
+		//String url = "http://asking.herokuapp.com/answer?query=";
+		//String url = "http://asking.herokuapp.com/validate-card";
+		String url = "http://localhost:8090/validate-card";
 		ModelMap map = new ModelMap();
 		while (notFinishedTalkingYet) {
+			map.put("cardNumber", "1234");
+			map.put("expiryDate", "072017");
 			DialogueResponse response = retrieveDialogueAnswer(new DialogueRequest(map, url));
 			log(response);
 			
-			map = new ModelMap();
+			map = new ModelMap();			
 			
 			for (QuestionForCustomer vraag : response.getQuestions()) {
 				Interaction interaction = OutputTurns.interaction("get-speech")
-						.addPrompt(new SpeechSynthesis(vraag.getQuestion()))
-						.build(getGrammar(vraag.getType()), Duration.seconds(5));
+						.addPrompt(new SpeechSynthesis("Hello"))
+						.build(getGrammar(QuestionType.ALPHANUMERIC), Duration.seconds(5));
 		
 				VoiceXmlInputTurn answer = DialogueUtils.doTurn(interaction, context);
 				JsonArray recognitionResult = answer.getRecognitionInfo().getRecognitionResult();
@@ -69,6 +73,7 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 				
 				// add answer to a list for a new REST call
 				map.put(vraag.getParameterName(), recognised);
+				
 			}
 			url = response.getContextUrl();
 			// do a new REST call with all params and answers // DONE ABOVE

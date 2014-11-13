@@ -42,7 +42,13 @@ public class DialogueResponse {
 
 	@Override
 	public String toString() {
-		return "DialogueResponse [questions=" + questions + ", contextUrl="
+		StringBuilder builder = new StringBuilder("");
+		if (questions != null) {
+			for (QuestionForCustomer question : questions) {
+				builder.append(question.toString());			
+			}			
+		}
+		return "DialogueResponse [questions=" + builder.toString() + ", contextUrl="
 				+ contextUrl + "]";
 	}
 }

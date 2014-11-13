@@ -24,12 +24,13 @@ public class ServletInit extends SpringBootServletInitializer {
 		rootContext.register(Application.class);
 
 		servletContext.addListener(new ContextLoaderListener(rootContext));
-		
-		servletContext.setInitParameter(DialogueFactory.class.getCanonicalName(),
-				HackathonDialogueFactory.class.getCanonicalName());		
+
+		servletContext.setInitParameter(
+				DialogueFactory.class.getCanonicalName(),
+				HackathonDialogueFactory.class.getCanonicalName());
 		super.onStartup(servletContext);
 	}
-	
+
 	@Bean
 	public VoiceXmlDialogueServlet dispatcherServlet() {
 		VoiceXmlDialogueServlet servlet = new VoiceXmlDialogueServlet();
@@ -38,7 +39,8 @@ public class ServletInit extends SpringBootServletInitializer {
 	}
 
 	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+	protected SpringApplicationBuilder configure(
+			SpringApplicationBuilder application) {
 		return application.sources(ServletInit.class);
 	}
 }

@@ -50,12 +50,9 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 		context.setLanguage("nl-NL");
 
 		String url = "http://asking.herokuapp.com/answer?query=";
-		//String url = "http://asking.herokuapp.com/validate-card";
-		//String url = "http://localhost:8090/validate-card";
 		ModelMap map = new ModelMap();
 		while (notFinishedTalkingYet) {
-			map.put("cardNumber", "1234");
-			map.put("expiryDate", "072017");
+
 			DialogueResponse response = retrieveDialogueAnswer(new DialogueRequest(map, url));
 			log(response);
 			

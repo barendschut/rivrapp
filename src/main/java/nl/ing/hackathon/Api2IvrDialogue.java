@@ -23,6 +23,7 @@ import com.nuecho.rivr.core.util.Duration;
 import com.nuecho.rivr.voicexml.dialogue.VoiceXmlDialogue;
 import com.nuecho.rivr.voicexml.dialogue.VoiceXmlDialogueContext;
 import com.nuecho.rivr.voicexml.turn.first.VoiceXmlFirstTurn;
+import com.nuecho.rivr.voicexml.turn.input.VoiceXmlEvent;
 import com.nuecho.rivr.voicexml.turn.input.VoiceXmlInputTurn;
 import com.nuecho.rivr.voicexml.turn.last.Exit;
 import com.nuecho.rivr.voicexml.turn.last.VoiceXmlLastTurn;
@@ -62,6 +63,10 @@ public class Api2IvrDialogue implements VoiceXmlDialogue, InitializingBean {
 						.build(getGrammar(vraag.getType()), Duration.seconds(5));
 		
 				VoiceXmlInputTurn answer = DialogueUtils.doTurn(interaction, context);
+				if (VoiceXmlEvent.hasEvent(VoiceXmlEvent.NO_INPUT, answer.getEvents())) {
+				    System.out.println("Timeout.");
+				    break;
+				}
 				JsonArray recognitionResult = answer.getRecognitionInfo().getRecognitionResult();
 				String recognised = recognitionResult.getJsonObject(0).getString("interpretation");
 				System.out.println("Got a reply from the caller:");

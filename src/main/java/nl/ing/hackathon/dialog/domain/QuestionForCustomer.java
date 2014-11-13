@@ -21,6 +21,20 @@ public class QuestionForCustomer {
 	
 	private String step;
 
+	private String url;
+
+	public QuestionForCustomer () {
+		
+	}
+	
+	public String getStep() {
+		return step;
+	}
+
+	public void setStep(String step) {
+		this.step = step;
+	}
+	
 	public String getQuestion() {
 		return question;
 	}
@@ -62,16 +76,16 @@ public class QuestionForCustomer {
 		this.type = type;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public enum QuestionType {
 		ALPHANUMERIC, NUMERIC, DATE;
-	}
-
-	public String getStep() {
-		return step;
-	}
-
-	public void setStep(String step) {
-		this.step = step;
 	}
 
 	@Override
